@@ -23,6 +23,8 @@ contract NovaDAO {
     address public feesMaster;
 
     mapping(uint256 => address) private polls;
+    mapping(uint256 => string)  public  termsURI;
+    // we'll put an URI of terms text document. supported format will be .txt
 
     constructor() {
         asset = 0x02C13f421ABCdD8A11faC1a4aE43c59d51FB9e19;
@@ -56,6 +58,7 @@ contract NovaDAO {
     function createPoll(
         uint32 _duration,
         bytes32 _termsHash,
+        string memory _termsURI,
         uint256 _quorum
     ) public returns(address _newPoll) {
         IERC20 _asset = IERC20(asset);
@@ -67,6 +70,7 @@ contract NovaDAO {
         // refunded when poll is finished discouraging proposers to create junk polls
 
         polls[nextPollId] = _newPoll;
+        termsURI[nextPollId] = _termsURI;
         nextPollId++;
     }
 }
