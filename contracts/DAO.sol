@@ -64,7 +64,7 @@ contract NovaDAO {
         _newPoll = address(new NovaPoll(_duration, _termsHash, _quorum));
 
         require(_asset.transferFrom(msg.sender, _newPoll, proposerLock));
-        // refunded only in case of passed poll discouraging proposers to create junk polls
+        // refunded when poll is finished discouraging proposers to create junk polls
 
         polls[nextPollId] = _newPoll;
         nextPollId++;
@@ -132,7 +132,7 @@ contract NovaPoll {
         uint256 _unlockAmount = lockedCoins[msg.sender];
         lockedCoins[msg.sender] = 0;
 
-        if (msg.sender == proposer && isPassed)
+        if (msg.sender == proposer)
             _unlockAmount += proposerLock;
 
         NovaDAO _context    = NovaDAO(parent);
