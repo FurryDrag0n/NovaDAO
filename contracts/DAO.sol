@@ -31,6 +31,11 @@ contract NovaDAO {
         feesMaster = msg.sender;
     }
 
+    modifier onlyMaster() {
+        require(msg.sender == feesMaster, "unauthorized");
+        _;
+    }
+
     function getPollAddress(uint256 _pollId) public view returns(address) {
         return polls[_pollId];
     }
@@ -39,11 +44,13 @@ contract NovaDAO {
         return NovaPoll(polls[_pollId]).isPassed();
     }
 
-    function changeFees(uint256 _newMinBalance, uint256 _newLockAmount) public {
-        require(msg.sender == feesMaster, "unauthorized");
-
+    function changeFees(uint256 _newMinBalance, uint256 _newLockAmount) public onlyMaster {
         minimumProposerBalance = _newMinBalance;
         proposerLock           = _newLockAmount;
+    }
+
+    function changeMaster(address _new) public onlyMaster {
+        feesMaster = _new;
     }
     
     function createPoll(
